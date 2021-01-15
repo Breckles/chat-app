@@ -9,8 +9,19 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 
+import { ChatPage } from './pages/chat/chat.page';
+import { ChatComponent } from './components/chat/chat.component';
+import { ChatDisplayComponent } from './components/chat/chat-display/chat-display.component';
+import { ChatTextInputComponent } from './components/chat/chat-text-input/chat-text-input.component';
+
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    ChatPage,
+    ChatComponent,
+    ChatDisplayComponent,
+    ChatTextInputComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

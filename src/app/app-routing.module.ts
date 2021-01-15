@@ -1,10 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { ChatPage } from './pages/chat/chat.page';
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '', redirectTo: 'chat', pathMatch: 'full' },
+  { path: 'chat', component: ChatPage },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
