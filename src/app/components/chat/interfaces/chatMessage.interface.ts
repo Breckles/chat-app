@@ -1,6 +1,6 @@
 export interface ChatMessage {
   value: string;
   author: string;
-  timeStamp: Date;
+  timeStamp: string;
   id?: string;
 }

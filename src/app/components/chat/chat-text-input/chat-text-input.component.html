@@ -1,1 +1,11 @@
-<p>chat-text-input works!</p>
+<div class="chatTextInputWrapper">
+  <form [formGroup]="messageForm"
+        (ngSubmit)="onSend()">
+    <label for="messageInput">Enter your message, then click the send button to send</label>
+    <input id="messageInput"
+           type="text"
+           placeholder="Enter message..."
+           formControlName="messageInput">
+    <button type="submit">Send</button>
+  </form>
+</div>

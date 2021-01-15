@@ -1,9 +1,7 @@
 <div class="chatDisplayWrapper">
   <ul>
-    <li *ngFor="let chatMessage of chatRoom | async">
-      Message: {{chatMessage.value}} <br>
-      Author: {{chatMessage.author}} <br>
-      Date: {{chatMessage.timeStamp | date}}
+    <li *ngFor="let chatMessage of chatMessagesObs | async">
+      {{chatMessage.value}}
     </li>
   </ul>
 </div>

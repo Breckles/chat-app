@@ -10,11 +10,11 @@ import { ChatService } from '../chat.service';
   styleUrls: ['./chat-display.component.scss'],
 })
 export class ChatDisplayComponent implements OnInit {
-  chatRoom!: Observable<ChatMessage[]>;
+  chatMessagesObs!: Observable<ChatMessage[]>;
 
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
-    this.chatRoom = this.chatService.getChatRoom();
+    this.chatMessagesObs = this.chatService.getChatMessagesObservable();
   }
 }
