@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
-import { AngularFireDatabase } from '@angular/fire/database';
-
-import { ChatRoom } from '../interfaces/chatRoom.interface';
 import { ChatMessage } from '../interfaces/chatMessage.interface';
+import { ChatService } from '../chat.service';
 
 @Component({
   selector: 'app-chat-display',
@@ -14,11 +12,9 @@ import { ChatMessage } from '../interfaces/chatMessage.interface';
 export class ChatDisplayComponent implements OnInit {
   chatRoom!: Observable<ChatMessage[]>;
 
-  constructor(private fireDb: AngularFireDatabase) {}
+  constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
-    this.chatRoom = this.fireDb.list('chatRoom').valueChanges() as Observable<
-      ChatMessage[]
-    >;
+    this.chatRoom = this.chatService.getChatRoom();
   }
 }

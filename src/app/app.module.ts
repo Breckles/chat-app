@@ -13,6 +13,7 @@ import { ChatPage } from './pages/chat/chat.page';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatDisplayComponent } from './components/chat/chat-display/chat-display.component';
 import { ChatTextInputComponent } from './components/chat/chat-text-input/chat-text-input.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { ChatTextInputComponent } from './components/chat/chat-text-input/chat-t
   imports: [
     BrowserModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
   ],
