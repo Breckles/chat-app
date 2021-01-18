@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from './auth.service';
 
 // interface AdditionalUserInfo {
 //   isNewUser: boolean;
@@ -26,6 +27,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./auth.component.scss'],
 })
 export class AuthComponent implements OnInit {
+  errorMessage = '';
   authMode: 'signup' | 'signin' = 'signin';
   authForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -35,9 +37,14 @@ export class AuthComponent implements OnInit {
     ]),
   });
 
-  constructor(private auth: AngularFireAuth) {}
+  // constructor(private auth: AngularFireAuth) {}
+  constructor(private authService: AuthService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.authService.authErrorSubject.subscribe((errorMessage) => {
+      this.errorMessage = errorMessage;
+    });
+  }
 
   onSubmit() {
     if (this.authForm.valid) {
@@ -47,24 +54,26 @@ export class AuthComponent implements OnInit {
       let authPromise;
 
       if (this.authMode === 'signin') {
-        authPromise = this.auth.createUserWithEmailAndPassword(email, password);
+        // authPromise = this.auth.createUserWithEmailAndPassword(email, password);
+        this.authService.login(email, password);
       } else {
-        authPromise = this.auth.signInWithEmailAndPassword(email, password);
+        // authPromise = this.auth.signInWithEmailAndPassword(email, password);
+        this.authService.signUp(email, password);
       }
 
-      authPromise
-        .then((user) => {
-          // user signed up successfully
-          console.log(user);
-          this.handleLogin(user);
-        })
-        .catch((error) => {
-          // error occured during sign up
-          console.log(error);
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          this.handleAuthError();
-        });
+      // authPromise
+      //   .then((user) => {
+      //     // user signed up successfully
+      //     console.log(user);
+      //     this.handleLogin(user);
+      //   })
+      //   .catch((error) => {
+      //     // error occured during sign up
+      //     console.log(error);
+      //     const errorCode = error.code;
+      //     const errorMessage = error.message;
+      //     this.handleAuthError();
+      //   });
     }
   }
 
