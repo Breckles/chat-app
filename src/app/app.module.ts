@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 
+import { AuthPage } from './pages/auth/auth.page';
 import { ChatPage } from './pages/chat/chat.page';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatDisplayComponent } from './components/chat/chat-display/chat-display.component';
@@ -18,6 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
+    AuthPage,
     ChatPage,
     ChatComponent,
     ChatDisplayComponent,
