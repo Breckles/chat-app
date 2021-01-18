@@ -1,0 +1,27 @@
+<div class="authComponentWrapper">
+  <h2 *ngIf="authMode === 'signin'">Sign In</h2>
+  <h2 *ngIf="authMode === 'signup'">Sign Up</h2>
+  <form [formGroup]="authForm"
+        (click)="onSubmit()">
+    <ul>
+      <li>
+        <label for="email">Email</label>
+        <input id="email"
+               type="text"
+               formControlName="email">
+      </li>
+      <li>
+        <label for="password">Password</label>
+        <input id="password"
+               type="text"
+               formControlName="password">
+      </li>
+    </ul>
+    <button *ngIf="authMode === 'signin'"
+            type="submit">Sign In</button>
+    <button *ngIf="authMode === 'signup'"
+            type="submit">Sign Up</button>
+  </form>
+  <p>Don't have an account? <button type="button"
+            (click)="toggleAuthMode()">Sign up</button> instead!</p>
+</div>
