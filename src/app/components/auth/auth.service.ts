@@ -43,15 +43,19 @@ export class AuthService {
       });
   }
 
+  logout() {
+    this.afAuth.signOut();
+  }
+
   getUserObservable() {
     return this.afAuth.user;
   }
 
-  handleLogin() {
-    console.log('User Observable: ' + this.afAuth.user);
+  private handleLogin() {
+    // console.log('User Observable: ' + this.afAuth.user);
   }
 
-  handleError(error: AuthError) {
+  private handleError(error: AuthError) {
     let errorMessage = 'An unknown error has occurred';
     console.log(error);
     if (error.message) {

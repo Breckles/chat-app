@@ -1,0 +1,7 @@
+<div class="authNavLinkWrapper">
+  <a *ngIf="!isAuthenticated"
+     [routerLink]="['/auth']">Sign In</a>
+  <a *ngIf="isAuthenticated"
+     [routerLink]=""
+     (click)="onLogout()">Logout</a>
+</div>

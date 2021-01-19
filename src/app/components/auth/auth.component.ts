@@ -2,25 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from './auth.service';
-
-// interface AdditionalUserInfo {
-//   isNewUser: boolean;
-//   profile: Object | null;
-//   providerId: string;
-//   username?: string | null;
-// }
-
-// interface AuthCredential {
-//   providerId: string;
-//   signInMethod: string;
-// }
-
-// interface UserCredential {
-//   additionalUserInfo: AdditionalUserInfo | null;
-//   credential: AuthCredential | null;
-//   operationType?: string | null;
-// }
-
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
@@ -37,7 +18,6 @@ export class AuthComponent implements OnInit {
     ]),
   });
 
-  // constructor(private auth: AngularFireAuth) {}
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
@@ -54,26 +34,10 @@ export class AuthComponent implements OnInit {
       let authPromise;
 
       if (this.authMode === 'signin') {
-        // authPromise = this.auth.createUserWithEmailAndPassword(email, password);
         this.authService.login(email, password);
       } else {
-        // authPromise = this.auth.signInWithEmailAndPassword(email, password);
         this.authService.signUp(email, password);
       }
-
-      // authPromise
-      //   .then((user) => {
-      //     // user signed up successfully
-      //     console.log(user);
-      //     this.handleLogin(user);
-      //   })
-      //   .catch((error) => {
-      //     // error occured during sign up
-      //     console.log(error);
-      //     const errorCode = error.code;
-      //     const errorMessage = error.message;
-      //     this.handleAuthError();
-      //   });
     }
   }
 
@@ -88,4 +52,8 @@ export class AuthComponent implements OnInit {
   handleLogin(user: any) {}
 
   handleAuthError() {}
+
+  onLogout() {
+    this.authService.logout();
+  }
 }
