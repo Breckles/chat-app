@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
 interface AuthError {
@@ -13,7 +14,7 @@ interface AuthError {
 export class AuthService {
   authErrorSubject = new Subject<string>();
 
-  constructor(private afAuth: AngularFireAuth) {}
+  constructor(private afAuth: AngularFireAuth, private router: Router) {}
 
   login(email: string, password: string) {
     this.afAuth
@@ -45,6 +46,7 @@ export class AuthService {
 
   logout() {
     this.afAuth.signOut();
+    this.router.navigate(['auth']);
   }
 
   getUserObservable() {
@@ -53,6 +55,7 @@ export class AuthService {
 
   private handleLogin() {
     // console.log('User Observable: ' + this.afAuth.user);
+    this.router.navigate(['chat']);
   }
 
   private handleError(error: AuthError) {

@@ -16,7 +16,11 @@ export class AuthNavComponent implements OnInit {
     this.auth.getUserObservable().subscribe((user) => {
       if (user) {
         this.isAuthenticated = true;
-        this.userName = user.displayName;
+        if (user.displayName) {
+          this.userName = user.displayName;
+        } else {
+          this.userName = user.email;
+        }
       } else {
         this.isAuthenticated = false;
         this.userName = null;

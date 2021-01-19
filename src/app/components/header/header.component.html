@@ -1,0 +1,15 @@
+<div id="headerWrapper">
+  <nav>
+    <ul class="navItemList">
+      <li class="navItem">
+        <a *ngIf="isAuthenticated"
+           [routerLink]="['/chat']"
+           routerLinkActive="active">Chat</a>
+      </li>
+
+      <li class="navItem authNav">
+        <app-auth-nav></app-auth-nav>
+      </li>
+    </ul>
+  </nav>
+</div>

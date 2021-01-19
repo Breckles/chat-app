@@ -1,6 +1,7 @@
 <div class="chatDisplayWrapper">
-  <ul>
-    <li *ngFor="let chatMessage of chatMessagesObs | async">
+  <ul class="chatMessageList">
+    <li class="chatMessage"
+        *ngFor="let chatMessage of chatMessagesObs | async">
       {{chatMessage.value}}
     </li>
   </ul>
