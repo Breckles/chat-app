@@ -33,9 +33,8 @@ export class AuthService {
   signUp(email: string, password: string) {
     this.afAuth
       .createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
+      .then((_userCredential) => {
         // successful signup
-        console.log('Signup UserCredential: ' + userCredential);
         this.handleLogin();
       })
       .catch((error: AuthError) => {
@@ -54,7 +53,6 @@ export class AuthService {
   }
 
   private handleLogin() {
-    // console.log('User Observable: ' + this.afAuth.user);
     this.router.navigate(['chat']);
   }
 
