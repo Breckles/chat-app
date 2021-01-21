@@ -28,7 +28,12 @@ export class AuthService {
     this._userObservable = this.afAuth.user;
     this._userObservable.subscribe((user) => {
       this._user = user;
+      this.authenticationState.next(this.isAuthenticated());
     });
+  }
+
+  isAuthenticated() {
+    return this.user !== null;
   }
 
   login(email: string, password: string) {
