@@ -8,12 +8,14 @@ import {
 } from '@angular/fire/auth-guard';
 
 import { AuthPage } from './pages/auth/auth.page';
+import { HomePage } from './pages/home/home.page';
 import { ChatPage } from './pages/chat/chat.page';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo('auth');
 
 const routes: Routes = [
-  { path: '', redirectTo: 'chat', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: HomePage },
   { path: 'auth', component: AuthPage },
   {
     path: 'chat',

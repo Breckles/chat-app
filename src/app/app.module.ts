@@ -16,6 +16,8 @@ import { AuthComponent } from './components/auth/auth.component';
 import { AuthNavComponent } from './components/auth/auth-nav/auth-nav.component';
 import { AuthNavLinkComponent } from './components/auth/auth-nav/auth-nav-link/auth-nav-link.component';
 
+import { HomePage } from './pages/home/home.page';
+
 import { ChatPage } from './pages/chat/chat.page';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatDisplayComponent } from './components/chat/chat-display/chat-display.component';

@@ -2,8 +2,12 @@
   <nav>
     <ul class="navItemList">
       <li class="navItem">
-        <a *ngIf="isAuthenticated"
-           [routerLink]="['/chat']"
+        <a [routerLink]="['/home']"
+           routerLinkActive="active">Home</a>
+      </li>
+      <li *ngIf="isAuthenticated"
+          class="navItem">
+        <a [routerLink]="['/chat']"
            routerLinkActive="active">Chat</a>
       </li>
 

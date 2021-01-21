@@ -59,7 +59,7 @@ export class AuthService {
 
   logout() {
     this.afAuth.signOut();
-    this.router.navigate(['auth']);
+    this.router.navigate(['home']);
   }
 
   getUserObservable() {
