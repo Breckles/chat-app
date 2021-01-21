@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Params } from '@angular/router';
+import { Subscription } from 'rxjs';
+
 import { AuthService } from './auth.service';
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss'],
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
   errorMessage = '';
-  authMode: 'signup' | 'signin' = 'signin';
+  authMode: string = 'login';
   authForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
@@ -17,10 +19,30 @@ export class AuthComponent implements OnInit {
       Validators.minLength(6),
     ]),
   });
+  private queryParamSub!: Subscription;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
+    console.log(this.route.snapshot.queryParams);
+
+    const authModeParam: string = this.route.snapshot.queryParams['authMode'];
+
+    if (authModeParam && authModeParam === 'signup') {
+      this.authMode = authModeParam;
+    }
+
+    this.queryParamSub = this.route.queryParams.subscribe((params: Params) => {
+      if (params['authMode'] && params['authMode'] === 'signup') {
+        this.authMode = 'signup';
+      } else {
+        this.authMode = 'login';
+      }
+    });
+
     this.authService.authErrorSubject.subscribe((errorMessage) => {
       this.errorMessage = errorMessage;
     });
@@ -31,9 +53,7 @@ export class AuthComponent implements OnInit {
       const email: string = this.authForm.get('email')!.value;
       const password: string = this.authForm.get('password')!.value;
 
-      let authPromise;
-
-      if (this.authMode === 'signin') {
+      if (this.authMode === 'login') {
         this.authService.login(email, password);
       } else {
         this.authService.signUp(email, password);
@@ -49,11 +69,11 @@ export class AuthComponent implements OnInit {
     }
   }
 
-  handleLogin(user: any) {}
-
-  handleAuthError() {}
-
   onLogout() {
     this.authService.logout();
+  }
+
+  ngOnDestroy() {
+    this.queryParamSub.unsubscribe();
   }
 }

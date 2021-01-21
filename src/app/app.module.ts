@@ -28,6 +28,7 @@ import { HeaderComponent } from './components/header/header.component';
   declarations: [
     AppComponent,
     AuthPage,
+    HomePage,
     ChatPage,
     ChatComponent,
     ChatDisplayComponent,

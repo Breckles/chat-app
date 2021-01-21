@@ -1,3 +1,19 @@
 <div id="homePageWrapper">
-
+  <div *ngIf="isAuthenticated; else notAuthenticated"
+       class="isAuthenticated">
+    <section class="friends">Your friends are listed here</section>
+    <section class="chatrooms">Your chatrooms are listed here</section>
+    <section>Create a new chatroom</section>
+  </div>
+  <ng-template #notAuthenticated>
+    <div class="notAuthenticated">
+      <p>
+        Welcome to chat! It seems like you're not logged in. <a [routerLink]="['/auth']">Login</a> to start chatting.
+      </p>
+      <p>
+        Don't have an account? <a [routerLink]="['/auth']"
+           [queryParams]="{authMode: 'signup'}">Sign up</a> now to get started!
+      </p>
+    </div>
+  </ng-template>
 </div>
