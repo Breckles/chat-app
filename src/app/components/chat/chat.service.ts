@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
-import { ServerPlaceholders } from '../shared/server-placeholders';
 import { ChatMessage } from './interfaces/chatMessage.interface';
 
 import * as firebase from 'firebase/app';
@@ -25,11 +24,9 @@ export class ChatService {
   }
 
   public sendMessage(message: string) {
-    console.log(ServerPlaceholders.TIMESTAMP());
     const newMessage: ChatMessage = {
       value: message,
       author: this.auth.user!.uid,
-      // timeStamp: ServerPlaceholders.TIMESTAMP(),
       timeStamp: firebase.default.database.ServerValue.TIMESTAMP,
     };
     this.chatMessagesRef.push(newMessage);

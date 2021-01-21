@@ -3,7 +3,7 @@
     <li class="chatMessage"
         *ngFor="let chatMessage of chatMessagesObs | async">
       {{chatMessage.value}}
-      {{ +chatMessage.timeStamp | date }}
+      {{ +chatMessage.timeStamp | date: 'short' }}
     </li>
   </ul>
 </div>
