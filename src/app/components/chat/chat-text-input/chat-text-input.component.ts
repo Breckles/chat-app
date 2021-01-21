@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+
+import ServerValue from '../../../../../node_modules/firebase';
+
 import { ChatService } from '../chat.service';
 import { ChatMessage } from '../interfaces/chatMessage.interface';
 
@@ -19,11 +22,7 @@ export class ChatTextInputComponent implements OnInit {
 
   public onSend() {
     if (this.messageForm.valid) {
-      const message: ChatMessage = {
-        value: this.messageForm.get('messageInput')!.value,
-        author: 'user',
-        timeStamp: `${new Date()}`,
-      };
+      const message: string = this.messageForm.get('messageInput')!.value;
       this.chatService.sendMessage(message);
     }
   }

@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireDatabase } from '@angular/fire/database';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+
+import { AngularFireAuth } from '@angular/fire/auth';
+import { User, UserCredential } from '@firebase/auth-types';
+
+import * as firebase from 'firebase';
 
 interface AuthError {
   code: string;
@@ -12,17 +17,25 @@ interface AuthError {
   providedIn: 'root',
 })
 export class AuthService {
+  user: User | null = null;
   authErrorSubject = new Subject<string>();
 
-  constructor(private afAuth: AngularFireAuth, private router: Router) {}
+  constructor(
+    private afAuth: AngularFireAuth,
+    private fireDB: AngularFireDatabase,
+    private router: Router
+  ) {
+    this.afAuth.user.subscribe((user) => {
+      this.user = user;
+    });
+  }
 
   login(email: string, password: string) {
     this.afAuth
       .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
+      .then((userCredential: UserCredential) => {
         // successful login
-        console.log('Login UserCredential: ' + userCredential);
-        this.handleLogin();
+        this.handleLogin(userCredential.user);
       })
       .catch((error: AuthError) => {
         // error during login
@@ -33,9 +46,10 @@ export class AuthService {
   signUp(email: string, password: string) {
     this.afAuth
       .createUserWithEmailAndPassword(email, password)
-      .then((_userCredential) => {
+      .then((userCredential: UserCredential) => {
         // successful signup
-        this.handleLogin();
+        this.createNewUser(userCredential.user);
+        this.handleLogin(userCredential.user);
       })
       .catch((error: AuthError) => {
         // error during signup
@@ -52,7 +66,8 @@ export class AuthService {
     return this.afAuth.user;
   }
 
-  private handleLogin() {
+  private handleLogin(user: User | null) {
+    // this.user = user;
     this.router.navigate(['chat']);
   }
 
@@ -63,5 +78,12 @@ export class AuthService {
       errorMessage = error.message;
     }
     this.authErrorSubject.next(errorMessage);
+  }
+
+  // eventually want to move this to the backend with some cloud functions
+  private createNewUser(user: User | null) {
+    if (user && user.email) {
+      this.fireDB.database.ref(`users/${user.uid}`).set({ email: user.email });
+    }
   }
 }
