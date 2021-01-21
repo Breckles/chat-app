@@ -9,13 +9,13 @@ import { AuthService } from '../auth/auth.service';
 })
 export class HeaderComponent implements OnInit {
   isAuthenticated = false;
-  private userSub = new Subscription();
+  private authStateSub = new Subscription();
 
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.userSub = this.auth.getUserObservable().subscribe((user) => {
-      this.isAuthenticated = user ? true : false;
+    this.auth.authenticationState.subscribe((isAuthenticated: boolean) => {
+      this.isAuthenticated = isAuthenticated;
     });
   }
 }

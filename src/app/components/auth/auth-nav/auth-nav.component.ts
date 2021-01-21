@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+
+import { User } from '@firebase/auth-types';
+
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -7,24 +10,13 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./auth-nav.component.scss'],
 })
 export class AuthNavComponent implements OnInit {
-  isAuthenticated = false;
-  userName!: string | null;
+  user: User | null = null;
 
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.auth.getUserObservable().subscribe((user) => {
-      if (user) {
-        this.isAuthenticated = true;
-        if (user.displayName) {
-          this.userName = user.displayName;
-        } else {
-          this.userName = user.email;
-        }
-      } else {
-        this.isAuthenticated = false;
-        this.userName = null;
-      }
+    this.auth.userObservable.subscribe((user) => {
+      this.user = user;
     });
   }
 }

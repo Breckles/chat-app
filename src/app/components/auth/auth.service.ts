@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { AngularFireAuth } from '@angular/fire/auth';
 import { User, UserCredential } from '@firebase/auth-types';
-
-import * as firebase from 'firebase';
 
 interface AuthError {
   code: string;
@@ -17,7 +15,9 @@ interface AuthError {
   providedIn: 'root',
 })
 export class AuthService {
-  user: User | null = null;
+  private _user: User | null = null;
+  private _userObservable!: Observable<User | null>;
+  private _authenticationState = new BehaviorSubject<boolean>(false);
   authErrorSubject = new Subject<string>();
 
   constructor(
@@ -25,8 +25,9 @@ export class AuthService {
     private fireDB: AngularFireDatabase,
     private router: Router
   ) {
-    this.afAuth.user.subscribe((user) => {
-      this.user = user;
+    this._userObservable = this.afAuth.user;
+    this._userObservable.subscribe((user) => {
+      this._user = user;
     });
   }
 
@@ -62,10 +63,6 @@ export class AuthService {
     this.router.navigate(['home']);
   }
 
-  getUserObservable() {
-    return this.afAuth.user;
-  }
-
   private handleLogin(user: User | null) {
     // this.user = user;
     this.router.navigate(['chat']);
@@ -85,5 +82,17 @@ export class AuthService {
     if (user && user.email) {
       this.fireDB.database.ref(`users/${user.uid}`).set({ email: user.email });
     }
+  }
+
+  public get user() {
+    return this._user;
+  }
+
+  public get userObservable() {
+    return this._userObservable;
+  }
+
+  public get authenticationState() {
+    return this._authenticationState;
   }
 }

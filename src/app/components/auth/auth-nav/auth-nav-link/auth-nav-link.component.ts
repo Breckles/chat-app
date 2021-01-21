@@ -14,7 +14,7 @@ export class AuthNavLinkComponent implements OnInit, OnDestroy {
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.auth.getUserObservable().subscribe((user) => {
+    this.auth.userObservable.subscribe((user) => {
       if (user) {
         this.isAuthenticated = true;
       } else {
