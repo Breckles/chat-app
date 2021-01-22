@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { ChatMessage } from './interfaces/chatMessage.interface';
 
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import 'firebase/database';
 
 @Injectable({
@@ -27,8 +27,21 @@ export class ChatService {
     const newMessage: ChatMessage = {
       value: message,
       author: this.auth.user!.uid,
-      timeStamp: firebase.default.database.ServerValue.TIMESTAMP,
+      timeStamp: firebase.database.ServerValue.TIMESTAMP,
     };
     this.chatMessagesRef.push(newMessage);
+  }
+
+  public createChatroom(chatroomName: string) {
+    this.fireDB.database
+      .ref('chatrooms')
+      .push({
+        name: chatroomName,
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        lastMessage: `${chatroomName} chatroom created!`,
+      })
+      .then((chatroomRef: firebase.database.Reference) => {
+        console.log(chatroomRef.key);
+      });
   }
 }

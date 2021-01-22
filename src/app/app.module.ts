@@ -23,6 +23,7 @@ import { ChatComponent } from './components/chat/chat.component';
 import { ChatDisplayComponent } from './components/chat/chat-display/chat-display.component';
 import { ChatTextInputComponent } from './components/chat/chat-text-input/chat-text-input.component';
 import { HeaderComponent } from './components/header/header.component';
+import { ChatCreateComponent } from './components/chat/chat-create/chat-create.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { HeaderComponent } from './components/header/header.component';
     AuthNavComponent,
     AuthNavLinkComponent,
     HeaderComponent,
+    ChatCreateComponent,
   ],
   imports: [
     BrowserModule,

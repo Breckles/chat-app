@@ -1,0 +1,12 @@
+<div class="chatCreateWrapper">
+  <header>
+    <h2>Create a new chatroom</h2>
+    <form [formGroup]="chatroomCreateForm"
+          (submit)="onCreateChatroom()">
+      <label for="chatroomName">Chatroom Name</label>
+      <input id="chatroomName"
+             formControlName="chatroomName"
+             type="text">
+    </form>
+  </header>
+</div>
