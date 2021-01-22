@@ -9,17 +9,13 @@ import { AuthService } from '../../auth.service';
 })
 export class AuthNavLinkComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
-  userSub = new Subscription();
+  private authStateSub!: Subscription;
 
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.auth.userObservable.subscribe((user) => {
-      if (user) {
-        this.isAuthenticated = true;
-      } else {
-        this.isAuthenticated = false;
-      }
+    this.auth.authenticationState.subscribe((isAuthenticated: boolean) => {
+      this.isAuthenticated = isAuthenticated;
     });
   }
 
@@ -28,6 +24,6 @@ export class AuthNavLinkComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.userSub.unsubscribe();
+    this.authStateSub.unsubscribe();
   }
 }

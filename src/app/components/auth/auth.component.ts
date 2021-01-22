@@ -27,16 +27,14 @@ export class AuthComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.route.snapshot.queryParams);
-
     const authModeParam: string = this.route.snapshot.queryParams['authMode'];
 
-    if (authModeParam && authModeParam === 'signup') {
-      this.authMode = authModeParam;
+    if (authModeParam === 'signup') {
+      this.authMode = 'signup';
     }
 
     this.queryParamSub = this.route.queryParams.subscribe((params: Params) => {
-      if (params['authMode'] && params['authMode'] === 'signup') {
+      if (params['authMode'] === 'signup') {
         this.authMode = 'signup';
       } else {
         this.authMode = 'login';
@@ -58,14 +56,6 @@ export class AuthComponent implements OnInit, OnDestroy {
       } else {
         this.authService.signUp(email, password);
       }
-    }
-  }
-
-  toggleAuthMode() {
-    if (this.authMode === 'signin') {
-      this.authMode = 'signup';
-    } else {
-      this.authMode = 'signin';
     }
   }
 

@@ -1,7 +1,9 @@
 <div class="chatComponentWrapper">
-
-  <app-chat-display></app-chat-display>
-  <app-chat-text-input></app-chat-text-input>
-
-  <app-chat-create></app-chat-create>
+  <div *ngIf="activeChatroomID !== null; else chatDoesNotExist">
+    <app-chat-display></app-chat-display>
+    <app-chat-text-input></app-chat-text-input>
+  </div>
+  <ng-template #chatDoesNotExist>
+    Oops, it seems like this chatroom does not exist.
+  </ng-template>
 </div>

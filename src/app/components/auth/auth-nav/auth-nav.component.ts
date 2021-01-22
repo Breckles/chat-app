@@ -15,7 +15,7 @@ export class AuthNavComponent implements OnInit {
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.auth.userObservable.subscribe((user) => {
+    this.auth.userObservable.subscribe((user: User | null) => {
       this.user = user;
     });
   }

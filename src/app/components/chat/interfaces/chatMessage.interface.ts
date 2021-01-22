@@ -1,5 +1,3 @@
-import { ServerPlaceholder } from '../../shared/server-placeholders';
-
 export interface ChatMessage {
   value: string;
   author: string;

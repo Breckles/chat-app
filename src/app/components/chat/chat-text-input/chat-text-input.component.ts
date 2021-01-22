@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import ServerValue from '../../../../../node_modules/firebase';
-
 import { ChatService } from '../chat.service';
-import { ChatMessage } from '../interfaces/chatMessage.interface';
 
 @Component({
   selector: 'app-chat-text-input',

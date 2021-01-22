@@ -39,9 +39,9 @@ export class AuthService {
   login(email: string, password: string) {
     this.afAuth
       .signInWithEmailAndPassword(email, password)
-      .then((userCredential: UserCredential) => {
+      .then((_userCredential: UserCredential) => {
         // successful login
-        this.handleLogin(userCredential.user);
+        this.handleLogin();
       })
       .catch((error: AuthError) => {
         // error during login
@@ -55,7 +55,7 @@ export class AuthService {
       .then((userCredential: UserCredential) => {
         // successful signup
         this.createNewUser(userCredential.user);
-        this.handleLogin(userCredential.user);
+        this.handleLogin();
       })
       .catch((error: AuthError) => {
         // error during signup
@@ -68,9 +68,8 @@ export class AuthService {
     this.router.navigate(['home']);
   }
 
-  private handleLogin(user: User | null) {
-    // this.user = user;
-    this.router.navigate(['chat']);
+  private handleLogin() {
+    this.router.navigate(['home']);
   }
 
   private handleError(error: AuthError) {
