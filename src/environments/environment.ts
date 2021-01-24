@@ -7,11 +7,7 @@ export const environment = {
   firebase: {
     apiKey: 'AIzaSyAidadJwx5LEK6SbVZrfD_9mq5Y5YEtE4A',
     authDomain: 'chat-app-cb94f.firebaseapp.com',
-    databaseURL: 'https://chat-app-cb94f-default-rtdb.firebaseio.com/',
     projectId: 'chat-app-cb94f',
-    storageBucket: 'chat-app-cb94f.appspot.com',
-    messagingSenderId: '979252965947',
-    appId: '1:979252965947:web:a0defca8c8cfb1f609e21e',
   },
 };
 

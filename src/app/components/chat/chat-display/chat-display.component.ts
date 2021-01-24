@@ -15,6 +15,6 @@ export class ChatDisplayComponent implements OnInit {
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
-    this.chatMessagesObs = this.chatService.getChatMessagesObservable();
+    // this.chatMessagesObs = this.chatService.getChatMessagesObservable();
   }
 }

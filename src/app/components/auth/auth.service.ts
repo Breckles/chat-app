@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/database';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { FirestoreError } from '@firebase/firestore-types';
 import { User, UserCredential } from '@firebase/auth-types';
 
 interface AuthError {
@@ -22,7 +23,7 @@ export class AuthService {
 
   constructor(
     private afAuth: AngularFireAuth,
-    private fireDB: AngularFireDatabase,
+    private ngFirestore: AngularFirestore,
     private router: Router
   ) {
     this._userObservable = this.afAuth.user;
@@ -84,7 +85,18 @@ export class AuthService {
   // eventually want to move this to the backend with some cloud functions
   private createNewUser(user: User | null) {
     if (user && user.email) {
-      this.fireDB.database.ref(`users/${user.uid}`).set({ email: user.email });
+      this.ngFirestore
+        .collection('users')
+        .doc(user.uid)
+        .set({
+          email: user.email,
+        })
+        .catch((error: FirestoreError) => {
+          console.log(
+            'Error occurred while creating user in the database: %o',
+            error
+          );
+        });
     }
   }
 
