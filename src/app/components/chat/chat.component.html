@@ -1,6 +1,6 @@
 <div class="chatComponentWrapper">
-  <div *ngIf="activeChatroomID !== null; else chatDoesNotExist">
-    <app-chat-display></app-chat-display>
+  <div *ngIf="chatroomMessagesObs !== null; else chatDoesNotExist">
+    <app-chat-display [chatMessagesObs]="chatroomMessagesObs"></app-chat-display>
     <app-chat-text-input></app-chat-text-input>
   </div>
   <ng-template #chatDoesNotExist>

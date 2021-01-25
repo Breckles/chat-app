@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ChatMessage } from '../interfaces/chatMessage.interface';
-import { ChatService } from '../chat.service';
 
 @Component({
   selector: 'app-chat-display',
@@ -10,11 +9,10 @@ import { ChatService } from '../chat.service';
   styleUrls: ['./chat-display.component.scss'],
 })
 export class ChatDisplayComponent implements OnInit {
+  @Input()
   chatMessagesObs!: Observable<ChatMessage[]>;
 
-  constructor(private chatService: ChatService) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    // this.chatMessagesObs = this.chatService.getChatMessagesObservable();
-  }
+  ngOnInit(): void {}
 }

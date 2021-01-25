@@ -4,9 +4,10 @@ import { ChatMessage } from './chatMessage.interface';
 
 export interface ChatRoom {
   name: string;
-  messages?: ChatMessage[];
+  createdBy: string;
   lastMessage: string;
-  members: FieldValue | any[];
+  messages?: ChatMessage[];
+  members?: FieldValue | string[];
 
   /** When creating a chatroom, a placeholder value is assigned to
    * timestamp. This will cause firebase to inject a date string during the

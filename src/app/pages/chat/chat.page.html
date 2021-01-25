@@ -1,4 +1,4 @@
 <div id="chatPageWrapper">
-  <router-outlet></router-outlet>
+  <app-chat *ngIf="currentChatroomID"></app-chat>
   <app-chat-create></app-chat-create>
 </div>

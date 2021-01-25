@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { ChatService } from './chat.service';
+import { ChatMessage } from './interfaces/chatMessage.interface';
+import { ChatRoom } from './interfaces/chatRoom.interface';
 
 @Component({
   selector: 'app-chat',
@@ -7,18 +11,12 @@ import { ActivatedRoute, Params } from '@angular/router';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit {
-  activeChatroomID: string | null = null;
+  chatroomMessagesSub!: Subscription;
+  chatroomMessagesObs!: Observable<ChatMessage[]> | null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
-    console.log(this.route.snapshot.paramMap);
-
-    this.activeChatroomID = this.route.snapshot.paramMap.get('chatroomID');
-    console.log(`activeChatroomID: ${this.activeChatroomID}`);
-
-    this.route.paramMap.subscribe((params: Params) => {
-      this.activeChatroomID = params['chatroomID'];
-    });
+    this.chatroomMessagesObs = this.chatService.getChatMessagesObservable();
   }
 }

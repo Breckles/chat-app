@@ -6,7 +6,6 @@ import { canActivate, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { AuthPage } from './pages/auth/auth.page';
 import { HomePage } from './pages/home/home.page';
 import { ChatPage } from './pages/chat/chat.page';
-import { ChatComponent } from './components/chat/chat.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo('auth');
 
@@ -18,7 +17,6 @@ const routes: Routes = [
     path: 'chat',
     component: ChatPage,
     ...canActivate(redirectUnauthorizedToLogin),
-    children: [{ path: ':chatroomID', component: ChatComponent }],
   },
 ];
 

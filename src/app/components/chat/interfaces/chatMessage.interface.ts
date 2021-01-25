@@ -7,6 +7,6 @@ export interface ChatMessage {
 
   /** When creating a chatmessage, a placeholder value is assigned to
    * timestamp. This will cause firebase to inject a date string during the
-   * write operation. When the record is retrieved, timestamp will be a string */
-  timestamp: firebase.firestore.FieldValue | string;
+   * write operation. When the record is retrieved, timestamp will be a firebase.firestore.Timestamp object */
+  timestamp: any;
 }
