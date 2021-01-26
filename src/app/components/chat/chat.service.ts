@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 import {
   AngularFirestore,
@@ -12,16 +12,14 @@ import firebase from 'firebase/app';
 import { AuthService } from '../auth/auth.service';
 import { ChatMessage } from './interfaces/chatMessage.interface';
 import { ChatRoom } from './interfaces/chatRoom.interface';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  chatActiveState = new BehaviorSubject<boolean>(false);
   currentChatroomRef: AngularFirestoreDocument<ChatRoom> | null = null;
   currentChatroomMessagesRef: AngularFirestoreCollection<ChatMessage> | null = null;
-  currentChatroomMessages: ChatMessage[] | null = null;
 
   constructor(
     private auth: AuthService,
