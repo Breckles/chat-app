@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '@firebase/auth-types';
 
 import { AuthService } from '../auth.service';
+import { ChatUser } from '../models/chat-user.model';
 
 @Component({
   selector: 'app-auth-nav',
@@ -10,13 +11,17 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./auth-nav.component.scss'],
 })
 export class AuthNavComponent implements OnInit {
-  user: User | null = null;
+  chatUser: ChatUser | null = null;
 
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.auth.userObservable.subscribe((user: User | null) => {
-      this.user = user;
+    this.auth.authenticationState.subscribe((isAuthenticated: boolean) => {
+      if (isAuthenticated) {
+        this.chatUser = this.auth.chatUser;
+      } else {
+        this.chatUser = null;
+      }
     });
   }
 }

@@ -34,7 +34,7 @@ export class ChatService {
   public sendMessage(message: string) {
     const newMessage: ChatMessage = {
       value: message,
-      author: this.auth.user!.uid,
+      author: this.auth.chatUser!.uid,
     };
     this.currentChatroom?.messagesRef
       ?.add(newMessage)
@@ -50,9 +50,9 @@ export class ChatService {
 
     let newChatroom = new Chatroom(
       chatroomName,
-      this.auth.user!.uid,
+      this.auth.chatUser!.uid,
       `${chatroomName} chatroom created!`,
-      [this.auth.user!.uid]
+      [this.auth.chatUser!.uid]
     );
 
     try {
@@ -81,7 +81,7 @@ export class ChatService {
       return;
     }
 
-    this.addChatroomToMember(newChatroomRef.id, this.auth.user!.uid);
+    this.addChatroomToMember(newChatroomRef.id, this.auth.chatUser!.uid);
 
     this.router.navigate(['chat'], {
       queryParams: { chatroomID: newChatroomRef.id },
@@ -156,13 +156,5 @@ export class ChatService {
           error
         );
       });
-
-    // this.currentChatroom!.messagesRef;
-    // this.currentChatroomMessagesRef = this.currentChatroomRef.collection(
-    //   'messages',
-    //   (ref: firebase.firestore.CollectionReference) => {
-    //     return ref.orderBy('timestamp');
-    //   }
-    // );
   }
 }

@@ -4,8 +4,9 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { FirestoreError } from '@firebase/firestore-types';
-import { User, UserCredential } from '@firebase/auth-types';
+import firebase from 'firebase/app';
+
+import { ChatUser, CHAT_USER_CONVERTER } from './models/chat-user.model';
 
 interface AuthError {
   code: string;
@@ -16,8 +17,7 @@ interface AuthError {
   providedIn: 'root',
 })
 export class AuthService {
-  private _user: User | null = null;
-  private _userObservable!: Observable<User | null>;
+  public chatUser: ChatUser | null = null;
   private _authenticationState = new BehaviorSubject<boolean>(false);
   authErrorSubject = new Subject<string>();
 
@@ -26,37 +26,62 @@ export class AuthService {
     private ngFirestore: AngularFirestore,
     private router: Router
   ) {
-    this._userObservable = this.afAuth.user;
-    this._userObservable.subscribe((user) => {
-      this._user = user;
-      this.authenticationState.next(this.isAuthenticated());
+    this.afAuth.onAuthStateChanged;
+    this.afAuth.user.subscribe((user: firebase.User | null) => {
+      if (user === null) {
+        this.logout();
+      } else {
+        this.authenticationState.next(true);
+      }
     });
   }
 
-  isAuthenticated() {
-    return this.user !== null;
-  }
+  async login(email: string, password: string) {
+    // Authenticate the user
+    let userCredential: firebase.auth.UserCredential | undefined;
+    try {
+      userCredential = await this.afAuth.signInWithEmailAndPassword(
+        email,
+        password
+      );
+    } catch (error) {
+      console.log('An error occured while logging in: %o', error);
+    }
 
-  login(email: string, password: string) {
-    this.afAuth
-      .signInWithEmailAndPassword(email, password)
-      .then((_userCredential: UserCredential) => {
-        // successful login
-        this.handleLogin();
-      })
-      .catch((error: AuthError) => {
-        // error during login
-        this.handleError(error);
-      });
+    if (userCredential?.user) {
+      // successful login
+      this._authenticationState.next(true);
+
+      // Fetch chatUser record from database
+      try {
+        let chatUserSnapshot = await this.ngFirestore
+          .collection<ChatUser>('chatUsers')
+          .ref.withConverter(CHAT_USER_CONVERTER)
+          .doc(userCredential.user.uid)
+          .get();
+
+        if (chatUserSnapshot.exists) {
+          this.chatUser = chatUserSnapshot.data()!;
+          this.router.navigate(['home']);
+        }
+      } catch (error) {
+        console.log(
+          'An error occurred while fetching the chatUser record: %o',
+          error
+        );
+      }
+    }
   }
 
   signUp(email: string, password: string) {
     this.afAuth
       .createUserWithEmailAndPassword(email, password)
-      .then((userCredential: UserCredential) => {
+      .then((userCredential: firebase.auth.UserCredential) => {
         // successful signup
-        this.createNewUser(userCredential.user);
-        this.handleLogin();
+        if (userCredential.user) {
+          this.chatUser = this.createNewChatUser(userCredential.user);
+          this.router.navigate(['home']);
+        }
       })
       .catch((error: AuthError) => {
         // error during signup
@@ -66,10 +91,7 @@ export class AuthService {
 
   logout() {
     this.afAuth.signOut();
-    this.router.navigate(['home']);
-  }
-
-  private handleLogin() {
+    this._authenticationState.next(false);
     this.router.navigate(['home']);
   }
 
@@ -83,29 +105,28 @@ export class AuthService {
   }
 
   // eventually want to move this to the backend with some cloud functions
-  private createNewUser(user: User | null) {
-    if (user && user.email) {
-      this.ngFirestore
-        .collection('users')
-        .doc(user.uid)
-        .set({
-          email: user.email,
-        })
-        .catch((error: FirestoreError) => {
-          console.log(
-            'Error occurred while creating user in the database: %o',
-            error
-          );
-        });
-    }
-  }
+  private createNewChatUser(user: firebase.User): ChatUser {
+    const newChatUser = new ChatUser(
+      user.uid,
+      user.email,
+      user.photoURL,
+      user.displayName,
+      []
+    );
+    this.ngFirestore
+      .collection<ChatUser>('chatUsers')
+      .ref.withConverter(CHAT_USER_CONVERTER)
+      .doc(user.uid)
+      .set(newChatUser)
+      .catch((error: firebase.firestore.FirestoreError) => {
+        console.log(
+          'Error occurred while creating user in the database: %o',
+          error
+        );
+        return;
+      });
 
-  public get user() {
-    return this._user;
-  }
-
-  public get userObservable() {
-    return this._userObservable;
+    return newChatUser;
   }
 
   public get authenticationState() {

@@ -18,8 +18,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.chatroomSubscription = this.chatService.chatroomBehaviorSubject.subscribe(
       (chatroom: Chatroom | null) => {
-        console.log(chatroom);
-
         if (chatroom !== null) {
           this.chatroomMessagesObservable = chatroom.getMessagesObservable();
         }
