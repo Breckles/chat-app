@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import {
   AngularFirestore,
@@ -10,16 +12,18 @@ import {
 import firebase from 'firebase/app';
 
 import { AuthService } from '../auth/auth.service';
-import { ChatMessage } from './interfaces/chatMessage.interface';
-import { ChatRoom } from './interfaces/chatRoom.interface';
-import { Observable } from 'rxjs';
+import {
+  ChatMessage,
+  CHAT_MESSAGE_CONVERTER,
+} from './models/chatMessage.model';
+import { Chatroom, CHATROOM_CONVERTER } from './models/chatroom.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  currentChatroomRef: AngularFirestoreDocument<ChatRoom> | null = null;
-  currentChatroomMessagesRef: AngularFirestoreCollection<ChatMessage> | null = null;
+  chatroomBehaviorSubject = new BehaviorSubject<Chatroom | null>(null);
+  private currentChatroom: Chatroom | null = null;
 
   constructor(
     private auth: AuthService,
@@ -27,46 +31,43 @@ export class ChatService {
     private router: Router
   ) {}
 
-  public getChatMessagesObservable(): Observable<ChatMessage[]> | null {
-    if (this.currentChatroomMessagesRef) {
-      return this.currentChatroomMessagesRef.valueChanges();
-    } else {
-      return null;
-    }
-  }
-
   public sendMessage(message: string) {
     const newMessage: ChatMessage = {
       value: message,
       author: this.auth.user!.uid,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     };
-    this.currentChatroomMessagesRef!.add(newMessage).catch(
-      (error: firebase.firestore.FirestoreError) => {
+    this.currentChatroom?.messagesRef
+      ?.add(newMessage)
+      .catch((error: firebase.firestore.FirestoreError) => {
         console.log('An error occurred while writing the message: %o', error);
-      }
-    );
+      });
   }
 
   // This might be a good candidate for a 'transaction' type operation (eg. It
   // all works or it all fails)
   async createChatroom(chatroomName: string) {
-    let newChatroomRef: DocumentReference<ChatRoom>;
+    let newChatroomRef: DocumentReference<Chatroom>;
+
+    let newChatroom = new Chatroom(
+      chatroomName,
+      this.auth.user!.uid,
+      `${chatroomName} chatroom created!`,
+      [this.auth.user!.uid]
+    );
+
     try {
       newChatroomRef = await this.ngFirestore
-        .collection<ChatRoom>('chatrooms')
-        .add({
-          name: chatroomName,
-          createdBy: this.auth.user!.uid,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          lastMessage: `${chatroomName} chatroom created!`,
-        });
+        .collection<Chatroom>('chatrooms')
+        .ref.withConverter(CHATROOM_CONVERTER)
+        .add(newChatroom);
     } catch (error) {
       console.log('An error occurred while creating the chatroom: %o', error);
       return;
     }
 
     try {
+      // create 'messages' collection and add default first message. (.add
+      // creates the collection if it doesn't exist)
       await newChatroomRef.collection('messages').add({
         value: `${chatroomName} chatroom created!`,
         author: 'admin',
@@ -89,7 +90,7 @@ export class ChatService {
 
   private addMemberToChatroom(chatroomID: string, userID: string) {
     this.ngFirestore
-      .collection<ChatRoom>('chatrooms')
+      .collection<Chatroom>('chatrooms')
       .doc(chatroomID)
       .update({
         members: firebase.firestore.FieldValue.arrayUnion(userID),
@@ -117,15 +118,51 @@ export class ChatService {
   }
 
   async setChatroom(chatroomID: string) {
-    this.currentChatroomRef = this.ngFirestore
-      .collection<ChatRoom>('chatrooms')
+    let chatroomRef = this.ngFirestore
+      .collection<Chatroom>('chatrooms')
+      .ref.withConverter(CHATROOM_CONVERTER)
       .doc(chatroomID);
 
-    this.currentChatroomMessagesRef = this.currentChatroomRef.collection(
-      'messages',
-      (ref: firebase.firestore.CollectionReference) => {
-        return ref.orderBy('timestamp');
-      }
-    );
+    chatroomRef
+      .get()
+      .then(
+        (chatroomSnapshot: firebase.firestore.DocumentSnapshot<Chatroom>) => {
+          if (chatroomSnapshot.exists) {
+            this.currentChatroom = chatroomSnapshot.data()!;
+            this.currentChatroom.ref = new AngularFirestoreDocument<Chatroom>(
+              chatroomRef,
+              this.ngFirestore
+            );
+
+            let messagesRef = this.ngFirestore
+              .collection<ChatMessage>(`chatrooms/${chatroomID}/messages`)
+              .ref.withConverter(CHAT_MESSAGE_CONVERTER);
+
+            this.currentChatroom.messagesRef = new AngularFirestoreCollection<ChatMessage>(
+              messagesRef,
+              messagesRef.orderBy('timestamp'),
+              this.ngFirestore
+            );
+
+            this.chatroomBehaviorSubject.next(this.currentChatroom);
+          } else {
+            console.log('The chatroom does not exist!');
+          }
+        }
+      )
+      .catch((error) => {
+        console.log(
+          'There was an error getting the chatroom object: %o',
+          error
+        );
+      });
+
+    // this.currentChatroom!.messagesRef;
+    // this.currentChatroomMessagesRef = this.currentChatroomRef.collection(
+    //   'messages',
+    //   (ref: firebase.firestore.CollectionReference) => {
+    //     return ref.orderBy('timestamp');
+    //   }
+    // );
   }
 }
