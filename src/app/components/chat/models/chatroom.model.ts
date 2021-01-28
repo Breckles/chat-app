@@ -27,6 +27,11 @@ export class Chatroom {
   }
 }
 
+export interface ChatroomInfo {
+  id: string;
+  name: string;
+}
+
 export const CHATROOM_CONVERTER: firebase.firestore.FirestoreDataConverter<Chatroom> = {
   toFirestore(chatroom: Chatroom): firebase.firestore.DocumentData {
     return {

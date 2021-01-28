@@ -1,4 +1,5 @@
 import firebase from 'firebase/app';
+import { ChatroomInfo } from '../../chat/models/chatroom.model';
 
 export class ChatUser {
   constructor(
@@ -6,7 +7,7 @@ export class ChatUser {
     public email: string | null,
     public photoURL: string | null,
     public displayName: string | null,
-    public chatrooms: string[]
+    public chatrooms: firebase.firestore.FieldValue | ChatroomInfo[]
   ) {}
 }
 

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 import {
   AngularFirestore,
@@ -17,6 +16,7 @@ import {
   CHAT_MESSAGE_CONVERTER,
 } from './models/chatMessage.model';
 import { Chatroom, CHATROOM_CONVERTER } from './models/chatroom.model';
+import { ChatUser } from '../auth/models/chat-user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +47,7 @@ export class ChatService {
   // all works or it all fails)
   async createChatroom(chatroomName: string) {
     let newChatroomRef: DocumentReference<Chatroom>;
+    console.log(this.auth.chatUser);
 
     let newChatroom = new Chatroom(
       chatroomName,
@@ -81,7 +82,11 @@ export class ChatService {
       return;
     }
 
-    this.addChatroomToMember(newChatroomRef.id, this.auth.chatUser!.uid);
+    this.addChatroomToMember(
+      newChatroomRef.id,
+      chatroomName,
+      this.auth.chatUser!.uid
+    );
 
     this.router.navigate(['chat'], {
       queryParams: { chatroomID: newChatroomRef.id },
@@ -102,12 +107,19 @@ export class ChatService {
       });
   }
 
-  private addChatroomToMember(chatroomID: string, userID: string) {
+  private addChatroomToMember(
+    chatroomID: string,
+    chatroomName: string,
+    userID: string
+  ) {
     this.ngFirestore
-      .collection('users')
+      .collection<ChatUser>('chatUsers')
       .doc(userID)
       .update({
-        chatrooms: firebase.firestore.FieldValue.arrayUnion(chatroomID),
+        chatrooms: firebase.firestore.FieldValue.arrayUnion({
+          id: chatroomID,
+          name: chatroomName,
+        }),
       })
       .catch((error: firebase.firestore.FirestoreError) => {
         console.log(

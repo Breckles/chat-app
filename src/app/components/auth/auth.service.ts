@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -18,59 +18,65 @@ interface AuthError {
 })
 export class AuthService {
   public chatUser: ChatUser | null = null;
+  public chatUserBehaviorSubject = new BehaviorSubject<ChatUser | null>(null);
   private _authenticationState = new BehaviorSubject<boolean>(false);
   authErrorSubject = new Subject<string>();
 
   constructor(
     private afAuth: AngularFireAuth,
     private ngFirestore: AngularFirestore,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.afAuth.onAuthStateChanged;
     this.afAuth.user.subscribe((user: firebase.User | null) => {
       if (user === null) {
-        this.logout();
+        this._authenticationState.next(false);
+        this.router.navigate(['/'], {
+          relativeTo: this.route,
+          skipLocationChange: true,
+        });
       } else {
         this.authenticationState.next(true);
+        this.setChatUser(user.uid);
       }
     });
   }
 
   async login(email: string, password: string) {
-    // Authenticate the user
-    let userCredential: firebase.auth.UserCredential | undefined;
-    try {
-      userCredential = await this.afAuth.signInWithEmailAndPassword(
-        email,
-        password
-      );
-    } catch (error) {
-      console.log('An error occured while logging in: %o', error);
-    }
+    this.afAuth
+      .signInWithEmailAndPassword(email, password)
+      .then((_userCredential) => {
+        this.authenticationState.next(true);
+        this.router.navigate(['home']);
+      })
+      .catch((error) => {
+        console.log('An error occured while logging in: %o', error);
+      });
+  }
 
-    if (userCredential?.user) {
-      // successful login
-      this._authenticationState.next(true);
-
-      // Fetch chatUser record from database
-      try {
-        let chatUserSnapshot = await this.ngFirestore
-          .collection<ChatUser>('chatUsers')
-          .ref.withConverter(CHAT_USER_CONVERTER)
-          .doc(userCredential.user.uid)
-          .get();
-
-        if (chatUserSnapshot.exists) {
-          this.chatUser = chatUserSnapshot.data()!;
-          this.router.navigate(['home']);
+  private setChatUser(userID: string) {
+    let chatUser: ChatUser;
+    // Fetch chatUser record from database
+    this.ngFirestore
+      .collection<ChatUser>('chatUsers')
+      .ref.withConverter(CHAT_USER_CONVERTER)
+      .doc(userID)
+      .get()
+      .then(
+        (chatUserSnapshot: firebase.firestore.DocumentSnapshot<ChatUser>) => {
+          if (chatUserSnapshot.exists) {
+            this.chatUser = chatUserSnapshot.data()!;
+            this.chatUserBehaviorSubject.next(this.chatUser);
+          }
         }
-      } catch (error) {
+      )
+      .catch((error) => {
         console.log(
           'An error occurred while fetching the chatUser record: %o',
           error
         );
-      }
-    }
+      });
   }
 
   signUp(email: string, password: string) {
@@ -90,9 +96,8 @@ export class AuthService {
   }
 
   logout() {
+    this.chatUser = null;
     this.afAuth.signOut();
-    this._authenticationState.next(false);
-    this.router.navigate(['home']);
   }
 
   private handleError(error: AuthError) {

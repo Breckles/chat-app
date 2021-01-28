@@ -24,6 +24,7 @@ import { ChatDisplayComponent } from './components/chat/chat-display/chat-displa
 import { ChatTextInputComponent } from './components/chat/chat-text-input/chat-text-input.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ChatCreateComponent } from './components/chat/chat-create/chat-create.component';
+import { UserChatroomsComponent } from './components/chat/user-chatrooms/user-chatrooms.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { ChatCreateComponent } from './components/chat/chat-create/chat-create.c
     AuthNavLinkComponent,
     HeaderComponent,
     ChatCreateComponent,
+    UserChatroomsComponent,
   ],
   imports: [
     BrowserModule,

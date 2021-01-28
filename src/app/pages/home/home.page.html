@@ -2,7 +2,10 @@
   <div *ngIf="isAuthenticated; else notAuthenticated"
        class="isAuthenticated">
     <section class="friends">Your friends are listed here</section>
-    <section class="chatrooms">Your chatrooms are listed here</section>
+    <section class="chatrooms">
+      Your chatrooms are listed here
+      <app-user-chatrooms></app-user-chatrooms>
+    </section>
     <section class="chatInvites">Your chat invites are listed here</section>
     <section>Create a new chatroom</section>
   </div>
