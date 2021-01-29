@@ -10,8 +10,7 @@ import { ChatPage } from './pages/chat/chat.page';
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo('auth');
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', component: HomePage },
+  { path: '', redirectTo: 'chat', pathMatch: 'full' },
   { path: 'auth', component: AuthPage },
   {
     path: 'chat',

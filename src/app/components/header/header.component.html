@@ -1,16 +1,7 @@
 <div id="headerWrapper">
+  <div id="logoWrapper">Chattah</div>
   <nav>
     <ul class="navItemList">
-      <li class="navItem">
-        <a [routerLink]="['/home']"
-           routerLinkActive="active">Home</a>
-      </li>
-      <li *ngIf="isAuthenticated"
-          class="navItem">
-        <a [routerLink]="['/chat']"
-           routerLinkActive="active">Chat</a>
-      </li>
-
       <li class="navItem authNav">
         <app-auth-nav></app-auth-nav>
       </li>

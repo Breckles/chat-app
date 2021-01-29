@@ -1,9 +1,11 @@
 <div class="userChatroomsWrapper">
-  <ul>
-    <li *ngFor="let chatroom of chatrooms">
-      <a [routerLink]="['/chat']"
-         [queryParams]="{'chatroomID': chatroom.id}"
-         routerLinkActive='active'>{{ chatroom.name }}</a>
-    </li>
-  </ul>
+  <nav>
+    <ul>
+      <li *ngFor="let chatroom of chatrooms">
+        <a [routerLink]="['/chat']"
+           [queryParams]="{'chatroomID': chatroom.id}"
+           routerLinkActive='active'>{{ chatroom.name }}</a>
+      </li>
+    </ul>
+  </nav>
 </div>

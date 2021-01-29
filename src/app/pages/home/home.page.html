@@ -1,14 +1,13 @@
 <div id="homePageWrapper">
   <div *ngIf="isAuthenticated; else notAuthenticated"
        class="isAuthenticated">
-    <section class="friends">Your friends are listed here</section>
-    <section class="chatrooms">
-      Your chatrooms are listed here
-      <app-user-chatrooms></app-user-chatrooms>
-    </section>
     <section class="chatInvites">Your chat invites are listed here</section>
-    <section>Create a new chatroom</section>
+    <section>
+      <app-chat-create></app-chat-create>
+    </section>
   </div>
+
+
   <ng-template #notAuthenticated>
     <div class="notAuthenticated">
       <p>

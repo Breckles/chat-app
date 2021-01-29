@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { User } from '@firebase/auth-types';
-
 import { AuthService } from '../auth.service';
 import { ChatUser } from '../models/chat-user.model';
 
@@ -16,8 +14,8 @@ export class AuthNavComponent implements OnInit {
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.auth.authenticationState.subscribe((isAuthenticated: boolean) => {
-      if (isAuthenticated) {
+    this.auth.chatUserBehaviorSubject.subscribe((chatUser: ChatUser | null) => {
+      if (chatUser) {
         this.chatUser = this.auth.chatUser;
       } else {
         this.chatUser = null;

@@ -1,5 +1,5 @@
 <div class="authNavWrapper">
-  <div *ngIf="chatUser">{{ chatUser!.displayName ? chatUser!.displayName : chatUser!.email}}</div>
-  <hr>
+  <div class="userIdentifier"
+       *ngIf="chatUser">{{ chatUser!.displayName ? chatUser!.displayName : chatUser!.email}}</div>
   <app-auth-nav-link></app-auth-nav-link>
 </div>

@@ -32,10 +32,9 @@ export class AuthService {
     this.afAuth.user.subscribe((user: firebase.User | null) => {
       if (user === null) {
         this._authenticationState.next(false);
-        this.router.navigate(['/'], {
-          relativeTo: this.route,
-          skipLocationChange: true,
-        });
+        this.chatUser = null;
+        this.chatUserBehaviorSubject.next(this.chatUser);
+        this.router.navigate(['']);
       } else {
         this.authenticationState.next(true);
         this.setChatUser(user.uid);
@@ -48,10 +47,11 @@ export class AuthService {
       .signInWithEmailAndPassword(email, password)
       .then((_userCredential) => {
         this.authenticationState.next(true);
-        this.router.navigate(['home']);
+        this.router.navigate(['']);
       })
       .catch((error) => {
         console.log('An error occured while logging in: %o', error);
+        this.handleError(error);
       });
   }
 
@@ -86,7 +86,7 @@ export class AuthService {
         // successful signup
         if (userCredential.user) {
           this.chatUser = this.createNewChatUser(userCredential.user);
-          this.router.navigate(['home']);
+          this.router.navigate(['']);
         }
       })
       .catch((error: AuthError) => {
@@ -96,7 +96,6 @@ export class AuthService {
   }
 
   logout() {
-    this.chatUser = null;
     this.afAuth.signOut();
   }
 

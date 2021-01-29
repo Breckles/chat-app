@@ -1,8 +1,11 @@
 <div class="authComponentWrapper">
   <h2 *ngIf="authMode === 'login'">Login</h2>
   <h2 *ngIf="authMode === 'signup'">Sign Up</h2>
+
   <div class="errorMessage">{{errorMessage}}</div>
-  <form [formGroup]="authForm"
+
+  <form class="authForm"
+        [formGroup]="authForm"
         (click)="onSubmit()">
     <ul>
       <li>
@@ -18,7 +21,9 @@
                formControlName="password">
       </li>
     </ul>
-    <button type="submit">{{this.authMode === 'login' ? 'Login' : 'Sign Up'}}</button>
+    <div class="buttonWrapper">
+      <button type="submit">{{this.authMode === 'login' ? 'Login' : 'Sign Up'}}</button>
+    </div>
   </form>
   <p *ngIf="authMode === 'login'">Don't have an account? <a [routerLink]="['/auth']"
        [queryParams]="{authMode: 'signup'}">Sign up</a> instead!</p>
