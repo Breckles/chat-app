@@ -34,7 +34,7 @@ export class AuthService {
         this._authenticationState.next(false);
         this.chatUser = null;
         this.chatUserBehaviorSubject.next(this.chatUser);
-        this.router.navigate(['']);
+        this.router.navigate(['auth']);
       } else {
         this.authenticationState.next(true);
         this.setChatUser(user.uid);

@@ -2,23 +2,27 @@
   <h2 *ngIf="authMode === 'login'">Login</h2>
   <h2 *ngIf="authMode === 'signup'">Sign Up</h2>
 
-  <div class="errorMessage">{{errorMessage}}</div>
 
   <form class="authForm"
         [formGroup]="authForm"
         (click)="onSubmit()">
+    <div class="authErrorMessage">{{errorMessage}}</div>
     <ul>
       <li>
         <label for="email">Email</label>
         <input id="email"
-               type="text"
+               type="email"
                formControlName="email">
+        <div *ngIf="getFormControl('email').touched && getFormControl('email').invalid"
+             class="fieldErrorMessage">Please enter a valid email address</div>
       </li>
       <li>
         <label for="password">Password</label>
         <input id="password"
-               type="text"
+               type="password"
                formControlName="password">
+        <div *ngIf="authMode === 'signup' && getFormControl('password').touched && getFormControl('password').invalid"
+             class="fieldErrorMessage">The password must be a minimum of 6 characters</div>
       </li>
     </ul>
     <div class="buttonWrapper">

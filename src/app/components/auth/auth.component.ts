@@ -34,6 +34,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     }
 
     this.queryParamSub = this.route.queryParams.subscribe((params: Params) => {
+      this.authForm.reset();
       if (params['authMode'] === 'signup') {
         this.authMode = 'signup';
       } else {
@@ -46,7 +47,12 @@ export class AuthComponent implements OnInit, OnDestroy {
     });
   }
 
+  getFormControl(controlName: string) {
+    return this.authForm.get(controlName)! as FormControl;
+  }
+
   onSubmit() {
+    this.errorMessage = '';
     if (this.authForm.valid) {
       const email: string = this.authForm.get('email')!.value;
       const password: string = this.authForm.get('password')!.value;
@@ -56,6 +62,8 @@ export class AuthComponent implements OnInit, OnDestroy {
       } else {
         this.authService.signUp(email, password);
       }
+
+      this.authForm.reset();
     }
   }
 
