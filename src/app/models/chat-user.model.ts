@@ -1,13 +1,11 @@
 import firebase from 'firebase/app';
-import { ChatroomInfo } from '../../chat/models/chatroom.model';
 
 export class ChatUser {
   constructor(
     public uid: string,
     public email: string | null,
     public photoURL: string | null,
-    public displayName: string | null,
-    public chatrooms: firebase.firestore.FieldValue | ChatroomInfo[]
+    public displayName: string | null
   ) {}
 }
 
@@ -17,7 +15,6 @@ export const CHAT_USER_CONVERTER: firebase.firestore.FirestoreDataConverter<Chat
       email: chatUser.email,
       photoURL: chatUser.photoURL,
       displayName: chatUser.displayName,
-      chatrooms: chatUser.chatrooms,
     };
   },
 
@@ -30,8 +27,7 @@ export const CHAT_USER_CONVERTER: firebase.firestore.FirestoreDataConverter<Chat
       snapshot.id,
       data.email,
       data.photoURL,
-      data.displayName,
-      data.chatrooms
+      data.displayName
     );
   },
 };

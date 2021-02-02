@@ -11,6 +11,8 @@ import { ChatMessage } from '../models/chatMessage.model';
 export class ChatDisplayComponent implements OnInit {
   @Input()
   chatMessagesObs!: Observable<ChatMessage[]>;
+  @Input()
+  currentUserID!: string | null;
 
   constructor() {}
 

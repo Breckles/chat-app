@@ -1,27 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../auth/auth.service';
-import { ChatUser } from '../../auth/models/chat-user.model';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ChatUserService } from 'src/app/chat-user.service';
 import { ChatroomInfo } from '../models/chatroom.model';
+import { UserChatrooms } from '../models/userChatrooms.model';
 
 @Component({
   selector: 'app-user-chatrooms',
   templateUrl: './user-chatrooms.component.html',
   styleUrls: ['./user-chatrooms.component.scss'],
 })
-export class UserChatroomsComponent implements OnInit {
-  chatrooms: ChatroomInfo[] | null = null;
+export class UserChatroomsComponent implements OnInit, OnDestroy {
+  chatrooms: ChatroomInfo[] = [];
+  userChatroomsSubscription!: Subscription;
 
-  constructor(private authservice: AuthService) {}
+  constructor(private chatUserService: ChatUserService) {}
 
   ngOnInit(): void {
-    this.authservice.chatUserBehaviorSubject.subscribe(
-      (chatUser: ChatUser | null) => {
-        if (chatUser) {
-          this.chatrooms = <ChatroomInfo[]>chatUser.chatrooms;
+    this.userChatroomsSubscription = this.chatUserService.chatUserChatrooms.subscribe(
+      (userChatrooms: UserChatrooms | null) => {
+        if (userChatrooms) {
+          this.chatrooms = userChatrooms.chatrooms as ChatroomInfo[];
         } else {
-          this.chatrooms = null;
+          this.chatrooms = [];
         }
       }
     );
+  }
+
+  ngOnDestroy() {
+    this.userChatroomsSubscription.unsubscribe();
   }
 }

@@ -1,6 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+
 import { ChatService } from './chat.service';
+import { ChatUserService } from 'src/app/chat-user.service';
+
+import { ChatUser } from '../../models/chat-user.model';
 import { ChatMessage } from './models/chatMessage.model';
 import { Chatroom } from './models/chatroom.model';
 
@@ -10,22 +14,34 @@ import { Chatroom } from './models/chatroom.model';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, OnDestroy {
+  chatUser: ChatUser | null = null;
+  chatUserSubscription!: Subscription;
   chatroomSubscription!: Subscription;
   chatroomMessagesObservable: Observable<ChatMessage[]> | null = null;
 
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private chatUserService: ChatUserService,
+    private chatService: ChatService
+  ) {}
 
   ngOnInit(): void {
-    this.chatroomSubscription = this.chatService.chatroomBehaviorSubject.subscribe(
+    this.chatUserSubscription = this.chatUserService.chatUser.subscribe(
+      (chatUser: ChatUser | null) => {
+        this.chatUser = chatUser;
+      }
+    );
+
+    this.chatroomSubscription = this.chatService.currentChatroom.subscribe(
       (chatroom: Chatroom | null) => {
         if (chatroom !== null) {
-          this.chatroomMessagesObservable = chatroom.getMessagesObservable();
+          this.chatroomMessagesObservable = chatroom.getMessages();
         }
       }
     );
   }
 
   ngOnDestroy(): void {
+    this.chatUserSubscription.unsubscribe();
     this.chatroomSubscription.unsubscribe();
   }
 }

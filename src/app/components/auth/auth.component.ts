@@ -13,6 +13,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   errorMessage = '';
   authMode: string = 'login';
   authForm = new FormGroup({
+    displayName: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
@@ -31,14 +32,23 @@ export class AuthComponent implements OnInit, OnDestroy {
 
     if (authModeParam === 'signup') {
       this.authMode = 'signup';
+      this.authForm.addControl(
+        'displayName',
+        new FormControl('', [Validators.required])
+      );
     }
 
     this.queryParamSub = this.route.queryParams.subscribe((params: Params) => {
       this.authForm.reset();
       if (params['authMode'] === 'signup') {
         this.authMode = 'signup';
+        this.authForm.addControl(
+          'displayName',
+          new FormControl('', [Validators.required])
+        );
       } else {
         this.authMode = 'login';
+        this.authForm.removeControl('displayName');
       }
     });
 
@@ -60,7 +70,8 @@ export class AuthComponent implements OnInit, OnDestroy {
       if (this.authMode === 'login') {
         this.authService.login(email, password);
       } else {
-        this.authService.signUp(email, password);
+        const displayName: string = this.authForm.get('displayName')!.value;
+        this.authService.signUp(email, password, displayName);
       }
 
       this.authForm.reset();

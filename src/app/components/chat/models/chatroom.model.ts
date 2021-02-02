@@ -10,20 +10,32 @@ import { ChatMessage } from './chatMessage.model';
 
 export class Chatroom {
   constructor(
+    public id: string,
     public name: string,
     public createdBy: string,
     public lastMessage: string,
     public members: string[] | firebase.firestore.FieldValue,
     public timestamp?: firebase.firestore.Timestamp,
     public ref?: AngularFirestoreDocument<Chatroom>,
-    public messagesRef?: AngularFirestoreCollection<ChatMessage>
+    private _messages: AngularFirestoreCollection<ChatMessage> | null = null
   ) {}
 
-  getMessagesObservable(): Observable<ChatMessage[]> | null {
-    if (this.messagesRef) {
-      return this.messagesRef.valueChanges();
+  public getMessages(): Observable<ChatMessage[]> | null {
+    if (this._messages) {
+      return this._messages.valueChanges();
     }
     return null;
+  }
+
+  public setMessages(messages: AngularFirestoreCollection<ChatMessage>) {
+    this._messages = messages;
+  }
+
+  public addMessage(message: string, userID: string) {
+    if (this._messages) {
+      const newMessage = new ChatMessage(message, userID);
+      this._messages.add(newMessage);
+    }
   }
 }
 
@@ -48,12 +60,14 @@ export const CHATROOM_CONVERTER: firebase.firestore.FirestoreDataConverter<Chatr
     options: firebase.firestore.SnapshotOptions
   ): Chatroom {
     const data = snapshot.data(options);
+
     return new Chatroom(
+      snapshot.id,
       data.name,
       data.createdBy,
       data.lastMessage,
-      data.timestamp,
-      data.members
+      data.members,
+      data.timestamp
     );
   },
 };

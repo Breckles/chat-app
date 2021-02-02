@@ -1,8 +1,12 @@
 <div class="chatComponentWrapper">
-  <div *ngIf="chatroomMessagesObservable !== null; else chatDoesNotExist">
-    <app-chat-display [chatMessagesObs]="chatroomMessagesObservable"></app-chat-display>
-    <app-chat-text-input></app-chat-text-input>
-  </div>
+  <ng-container *ngIf="chatUser">
+    <div *ngIf="chatroomMessagesObservable !== null; else chatDoesNotExist">
+      <app-chat-display [chatMessagesObs]="chatroomMessagesObservable"
+                        [currentUserID]="chatUser!.uid"></app-chat-display>
+      <app-chat-text-input></app-chat-text-input>
+    </div>
+  </ng-container>
+
   <ng-template #chatDoesNotExist>
     Oops, it seems like this chatroom does not exist.
   </ng-template>

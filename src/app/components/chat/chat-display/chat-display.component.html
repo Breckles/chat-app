@@ -1,6 +1,7 @@
 <div class="chatDisplayWrapper">
   <ul class="chatMessageList">
     <li class="chatMessage"
+        [ngClass]="chatMessage.author === currentUserID ? 'currentUserMessage' : 'chatMemberMessage'"
         *ngFor="let chatMessage of chatMessagesObs | async">
       {{chatMessage.value}}
       {{ chatMessage.timestamp ? (chatMessage.timestamp.toDate() | date: 'short') : ''}}

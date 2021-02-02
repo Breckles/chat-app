@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AuthService } from '../auth.service';
-import { ChatUser } from '../models/chat-user.model';
+import { ChatUser } from '../../../models/chat-user.model';
+import { ChatUserService } from 'src/app/chat-user.service';
 
 @Component({
   selector: 'app-auth-nav',
@@ -11,15 +11,11 @@ import { ChatUser } from '../models/chat-user.model';
 export class AuthNavComponent implements OnInit {
   chatUser: ChatUser | null = null;
 
-  constructor(private auth: AuthService) {}
+  constructor(private chatUserService: ChatUserService) {}
 
   ngOnInit(): void {
-    this.auth.chatUserBehaviorSubject.subscribe((chatUser: ChatUser | null) => {
-      if (chatUser) {
-        this.chatUser = this.auth.chatUser;
-      } else {
-        this.chatUser = null;
-      }
+    this.chatUserService.chatUser.subscribe((chatUser: ChatUser | null) => {
+      this.chatUser = chatUser;
     });
   }
 }
