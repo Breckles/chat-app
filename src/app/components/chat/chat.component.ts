@@ -27,7 +27,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.chatUserSubscription = this.chatUserService.chatUser.subscribe(
       (chatUser: ChatUser | null) => {
-        this.chatUser = chatUser;
+        if (chatUser !== null) {
+          this.chatUser = chatUser;
+        } else {
+          this.chatUser = null;
+        }
       }
     );
 
@@ -35,6 +39,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       (chatroom: Chatroom | null) => {
         if (chatroom !== null) {
           this.chatroomMessagesObservable = chatroom.getMessages();
+        } else {
+          this.chatroomMessagesObservable = null;
         }
       }
     );

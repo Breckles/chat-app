@@ -12,7 +12,7 @@ export class ChatDisplayComponent implements OnInit {
   @Input()
   chatMessagesObs!: Observable<ChatMessage[]>;
   @Input()
-  currentUserID!: string | null;
+  currentUserID!: string;
 
   constructor() {}
 

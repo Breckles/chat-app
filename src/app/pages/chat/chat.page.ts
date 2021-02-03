@@ -18,13 +18,6 @@ export class ChatPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // this.currentChatroomID = this.route.snapshot.queryParamMap.get(
-    //   'chatroomID'
-    // );
-    // if (this.currentChatroomID) {
-    //   this.chatService.setChatroom(this.currentChatroomID);
-    // }
-
     this.queryParamSub = this.route.queryParamMap.subscribe(
       (params: ParamMap) => {
         this.currentChatroomID = params.get('chatroomID');
