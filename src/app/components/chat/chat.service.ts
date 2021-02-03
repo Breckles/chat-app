@@ -85,7 +85,7 @@ export class ChatService {
         );
         return;
       }
-      this.chatUserService.addChatroomToUserChatrooms(
+      this.chatUserService.addChatroom(
         newChatroomRef.id,
         chatroomName,
         this.chatUser.uid
@@ -97,7 +97,7 @@ export class ChatService {
     }
   }
 
-  private addMemberToChatroomMembers(chatroomID: string, userID: string) {
+  private addMember(chatroomID: string, userID: string) {
     this.ngFirestore
       .collection<Chatroom>('chatrooms')
       .doc(chatroomID)

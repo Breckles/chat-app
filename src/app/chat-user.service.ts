@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import firebase from 'firebase/app';
 
 import { AuthService } from './components/auth/auth.service';
 import { ChatUser, CHAT_USER_CONVERTER } from './models/chat-user.model';
-import { AngularFirestore } from '@angular/fire/firestore';
+import {
+  AngularFirestore,
+  AngularFirestoreDocument,
+} from '@angular/fire/firestore';
 import {
   UserChatrooms,
   USER_CHATROOMS_CONVERTER,
@@ -16,7 +19,11 @@ import {
 })
 export class ChatUserService {
   private _chatUser = new BehaviorSubject<ChatUser | null>(null);
-  private _chatUserChatrooms = new BehaviorSubject<UserChatrooms | null>(null);
+  private _chatUserChatroomsBehaviorSubject = new BehaviorSubject<Observable<
+    UserChatrooms | undefined
+  > | null>(null);
+
+  private _chatUserChatroomsObservable!: Observable<UserChatrooms | undefined>;
 
   constructor(
     private auth: AuthService,
@@ -59,7 +66,13 @@ export class ChatUserService {
       .then((snapshot: firebase.firestore.DocumentSnapshot<UserChatrooms>) => {
         if (snapshot.exists) {
           const userChatrooms = snapshot.data() as UserChatrooms;
-          this._chatUserChatrooms.next(userChatrooms);
+          this._chatUserChatroomsObservable = this.ngFirestore
+            .collection<UserChatrooms>('userChatrooms')
+            .doc(id)
+            .valueChanges();
+          this._chatUserChatroomsBehaviorSubject.next(
+            this._chatUserChatroomsObservable
+          );
         }
       })
       .catch((error: firebase.FirebaseError) => {
@@ -70,11 +83,7 @@ export class ChatUserService {
       });
   }
 
-  public addChatroomToUserChatrooms(
-    chatroomID: string,
-    chatroomName: string,
-    userID: string
-  ) {
+  public addChatroom(chatroomID: string, chatroomName: string, userID: string) {
     this.ngFirestore
       .collection<UserChatrooms>('userChatrooms')
       .doc(userID)
@@ -98,6 +107,6 @@ export class ChatUserService {
   }
 
   public get chatUserChatrooms() {
-    return this._chatUserChatrooms;
+    return this._chatUserChatroomsBehaviorSubject;
   }
 }
