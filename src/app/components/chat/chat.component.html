@@ -1,10 +1,10 @@
 <div class="chatComponentWrapper">
   <ng-container *ngIf="chatUser">
-    <div *ngIf="chatroomMessagesObservable; else chatDoesNotExist">
+    <ng-container *ngIf="chatroomMessagesObservable; else chatDoesNotExist">
       <app-chat-display [chatMessagesObs]="chatroomMessagesObservable"
                         [currentUserID]="chatUser.uid"></app-chat-display>
       <app-chat-text-input></app-chat-text-input>
-    </div>
+    </ng-container>
   </ng-container>
 
   <ng-template #chatDoesNotExist>

@@ -21,6 +21,7 @@ export class ChatCreateComponent implements OnInit {
       const chatroomName: string = this.chatroomCreateForm.get('chatroomName')!
         .value;
       this.chatService.createChatroom(chatroomName);
+      this.chatroomCreateForm.reset();
     }
   }
 }

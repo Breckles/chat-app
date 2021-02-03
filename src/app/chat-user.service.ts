@@ -32,6 +32,8 @@ export class ChatUserService {
     this.auth.authUser.subscribe((authUser: firebase.User | null) => {
       if (authUser) {
         this.fetchAndSetChatUser(authUser.uid);
+      } else {
+        this._chatUser.next(null);
       }
     });
   }

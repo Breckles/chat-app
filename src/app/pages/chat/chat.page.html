@@ -1,6 +1,8 @@
 <div id="chatPageWrapper">
-  <app-chat *ngIf="currentChatroomID">
+  <app-chat *ngIf="currentChatroomID; else userChatrooms">
   </app-chat>
-  <app-chat-create></app-chat-create>
-  <!-- <app-user-chatrooms></app-user-chatrooms> -->
+  <!-- <app-chat-create></app-chat-create> -->
+  <ng-template #userChatrooms>
+    <app-user-chatrooms></app-user-chatrooms>
+  </ng-template>
 </div>
