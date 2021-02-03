@@ -1,10 +1,11 @@
-import { FieldValue } from '@firebase/firestore-types';
 import firebase from 'firebase/app';
+
+import { ChatUser } from 'src/app/models/chat-user.model';
 
 export class ChatMessage {
   constructor(
     public value: string,
-    public author: string,
+    public author: ChatUser,
     public timestamp?: firebase.firestore.Timestamp
   ) {}
 }
@@ -13,7 +14,12 @@ export const CHAT_MESSAGE_CONVERTER: firebase.firestore.FirestoreDataConverter<C
   toFirestore(chatMessage: ChatMessage) {
     return {
       value: chatMessage.value,
-      author: chatMessage.author,
+      author: {
+        uid: chatMessage.author.uid,
+        email: chatMessage.author.email,
+        photoURL: chatMessage.author.photoURL,
+        displayName: chatMessage.author.displayName,
+      },
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     };
   },

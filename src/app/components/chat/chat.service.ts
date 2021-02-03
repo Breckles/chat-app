@@ -40,7 +40,7 @@ export class ChatService {
 
   public sendMessage(message: string) {
     if (this.chatUser && this._currentChatroom) {
-      this._currentChatroom.addMessage(message, this.chatUser.uid);
+      this._currentChatroom.addMessage(message, this.chatUser);
     }
   }
 
@@ -73,11 +73,15 @@ export class ChatService {
       try {
         // create 'messages' collection and add default first message. (.add
         // creates the collection if it doesn't exist)
-        await newChatroomRef.collection('messages').add({
-          value: `${chatroomName} chatroom created!`,
-          author: 'admin',
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        });
+        await newChatroomRef
+          .collection('messages')
+          .withConverter(CHAT_MESSAGE_CONVERTER)
+          .add(
+            new ChatMessage(
+              `${chatroomName} chatroom created!`,
+              new ChatUser('', null, null, 'Chat Creator Bot')
+            )
+          );
       } catch (error) {
         console.log(
           'An error occurred while creating chatroom messages: %o',

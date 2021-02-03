@@ -7,6 +7,7 @@ import {
 import firebase from 'firebase/app';
 
 import { ChatMessage } from './chatMessage.model';
+import { ChatUser } from 'src/app/models/chat-user.model';
 
 export class Chatroom {
   constructor(
@@ -31,9 +32,9 @@ export class Chatroom {
     this._messages = messages;
   }
 
-  public addMessage(message: string, userID: string) {
+  public addMessage(message: string, user: ChatUser) {
     if (this._messages) {
-      const newMessage = new ChatMessage(message, userID);
+      const newMessage = new ChatMessage(message, user);
       this._messages.add(newMessage);
     }
   }
