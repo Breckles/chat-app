@@ -2,7 +2,7 @@
   <ul class="chatMessageList">
     <li class="chatMessage"
         [ngClass]="chatMessage.author.uid === currentUserID ? 'currentUserMessage' : 'otherUserMessage'"
-        *ngFor="let chatMessage of chatMessagesObs | async">
+        *ngFor="let chatMessage of chatMessages">
 
       <section class="messageText">
         <p>
@@ -14,7 +14,7 @@
         <img class="authorImg"
              [src]="chatMessage.author.photoURL ? chatMessage.author.photoURL : '../../../../assets/default_photo.svg'"
              alt="The authors display photo">
-        <time *ngIf="chatMessage.timestamp">{{ chatMessage.timestamp!.toDate() | date: 'short' }}</time>
+        <time>{{ chatMessage.timestamp!.toDate() | date: 'short' }}</time>
       </section>
 
 

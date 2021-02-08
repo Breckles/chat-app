@@ -136,7 +136,7 @@ export class ChatService {
               .collection<ChatMessage>(`chatrooms/${chatroomID}/messages`)
               .ref.withConverter(CHAT_MESSAGE_CONVERTER);
 
-            this._currentChatroom.setMessages(
+            this._currentChatroom.setMessagesRef(
               new AngularFirestoreCollection<ChatMessage>(
                 messagesRef,
                 messagesRef.orderBy('timestamp'),

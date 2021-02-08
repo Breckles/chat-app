@@ -9,6 +9,7 @@ import { ChatMessage } from '../models/chatMessage.model';
   styleUrls: ['./chat-display.component.scss'],
 })
 export class ChatDisplayComponent implements OnInit {
+  public chatMessages: ChatMessage[] = [];
   @Input()
   chatMessagesObs!: Observable<ChatMessage[]>;
   @Input()
@@ -16,5 +17,9 @@ export class ChatDisplayComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.chatMessagesObs.subscribe((chatMessages: ChatMessage[]) => {
+      this.chatMessages.push(...chatMessages);
+    });
+  }
 }

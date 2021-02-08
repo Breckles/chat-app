@@ -1,12 +1,14 @@
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import {
   AngularFirestoreCollection,
   AngularFirestoreDocument,
+  DocumentChangeAction,
 } from '@angular/fire/firestore';
 import firebase from 'firebase/app';
 
-import { ChatMessage } from './chatMessage.model';
+import { ChatMessage, CHAT_MESSAGE_CONVERTER } from './chatMessage.model';
 import { ChatUser } from 'src/app/models/chat-user.model';
 
 export class Chatroom {
@@ -18,24 +20,46 @@ export class Chatroom {
     public members: string[] | firebase.firestore.FieldValue,
     public timestamp?: firebase.firestore.Timestamp,
     public ref?: AngularFirestoreDocument<Chatroom>,
-    private _messages: AngularFirestoreCollection<ChatMessage> | null = null
+    private _messagesRef: AngularFirestoreCollection<ChatMessage> | null = null
   ) {}
 
+  /**
+   * Returns an observable of the chat messages for this classroom. On first
+   * invocation, all existing messages will be included. Afterwards, only the
+   * newly added messages will be included
+   */
   public getMessages(): Observable<ChatMessage[]> | null {
-    if (this._messages) {
-      return this._messages.valueChanges();
+    if (this._messagesRef) {
+      this._messagesRef.get().toPromise().then;
+      return this._messagesRef.stateChanges().pipe(
+        map((actions: DocumentChangeAction<ChatMessage>[]) => {
+          const newMessages: ChatMessage[] = [];
+          for (const action of actions) {
+            // events are emitted immediately on local writes, so this will
+            // trigger at a time when a message has been added but not been
+            // assigned a server timestamp yet (in which case it will have
+            // pending writes). We don't care about these and only want the
+            // messages that have been written to the backend and have a server
+            // timestamp defined
+            if (!action.payload.doc.metadata.hasPendingWrites) {
+              newMessages.push(action.payload.doc.data());
+            }
+          }
+          return newMessages;
+        })
+      );
     }
     return null;
   }
 
-  public setMessages(messages: AngularFirestoreCollection<ChatMessage>) {
-    this._messages = messages;
+  public setMessagesRef(messagesRef: AngularFirestoreCollection<ChatMessage>) {
+    this._messagesRef = messagesRef;
   }
 
   public addMessage(message: string, user: ChatUser) {
-    if (this._messages) {
+    if (this._messagesRef) {
       const newMessage = new ChatMessage(message, user);
-      this._messages.add(newMessage);
+      this._messagesRef.add(newMessage);
     }
   }
 }

@@ -39,7 +39,11 @@ export class UserChatroomsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.userChatroomsSubscription.unsubscribe();
-    this.userChatroomsObservableSubscription.unsubscribe();
+    if (this.userChatroomsSubscription) {
+      this.userChatroomsSubscription.unsubscribe();
+    }
+    if (this.userChatroomsObservableSubscription) {
+      this.userChatroomsObservableSubscription.unsubscribe();
+    }
   }
 }
