@@ -1,5 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import {
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 
 import { ChatMessage } from '../models/chatMessage.model';
 
@@ -8,18 +18,28 @@ import { ChatMessage } from '../models/chatMessage.model';
   templateUrl: './chat-display.component.html',
   styleUrls: ['./chat-display.component.scss'],
 })
-export class ChatDisplayComponent implements OnInit {
+export class ChatDisplayComponent implements OnInit, OnDestroy {
   public chatMessages: ChatMessage[] = [];
+  private chatMessageSubscription!: Subscription;
+
   @Input()
   chatMessagesObs!: Observable<ChatMessage[]>;
   @Input()
   currentUserID!: string;
+  @ViewChild('chatMessageList')
+  chatMessageListElRef!: ElementRef<HTMLUListElement>;
 
   constructor() {}
 
   ngOnInit(): void {
-    this.chatMessagesObs.subscribe((chatMessages: ChatMessage[]) => {
-      this.chatMessages.push(...chatMessages);
-    });
+    this.chatMessageSubscription = this.chatMessagesObs.subscribe(
+      (chatMessages: ChatMessage[]) => {
+        this.chatMessages.push(...chatMessages);
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.chatMessageSubscription.unsubscribe();
   }
 }

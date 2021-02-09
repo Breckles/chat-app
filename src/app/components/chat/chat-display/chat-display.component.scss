@@ -1,7 +1,6 @@
 .chatDisplayWrapper {
   width: 100%;
   height: 100%;
-
 }
 
 ul.chatMessageList {
@@ -13,42 +12,52 @@ ul.chatMessageList {
   overflow-y: auto;
 
   li.chatMessage {
-    width: fit-content;
+    display: flex;
+    flex-direction: column;
+
     max-width: 80%;
     margin: 0.5rem 0.5rem 0;
     padding: 0.5rem;
+    text-align: end;
 
-    border-radius: 1.5rem;
-    background-color: var(--chat-message-background-color);
 
     section.messageText {
-      width: 100%;
+      width: fit-content;
       padding: 0.5rem;
+
+      border-radius: 0.5rem;
+      background-color: var(--chat-message-background-color);
     }
 
     section.messageInfo {
       display: flex;
-      align-items: flex-end;
-      width: 100%;
+      justify-content: right;
+      align-items: center;
+      margin-top: 0.3rem;
 
       img.authorImg {
-        width: 3rem;
-        height: 3rem;
+        width: 2rem;
+        height: 2rem;
         border-radius: 50%;
         background-color: var(--chat-message-user-image-background);
       }
 
       time {
-        padding: 0 1rem;
+        padding-left: 1rem;
+
+        color: var(--chat-message-timestamp-color);
+        font-size: 1.2rem;
       }
     }
   }
 
   li.chatMessage.currentUserMessage {
     align-self: flex-end;
+    align-items: flex-end;
   }
 
   li.chatMessage.otherUserMessage {
     align-self: flex-start;
+    align-items: flex-start;
   }
 }
