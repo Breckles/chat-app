@@ -1,5 +1,6 @@
 <div class="chatDisplayWrapper">
   <ul class="chatMessageList"
+      appScrollToBottom
       #chatMessageList>
     <li class="chatMessage"
         [ngClass]="chatMessage.author.uid === currentUserID ? 'currentUserMessage' : 'otherUserMessage'"

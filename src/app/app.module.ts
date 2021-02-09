@@ -25,6 +25,7 @@ import { ChatTextInputComponent } from './components/chat/chat-text-input/chat-t
 import { HeaderComponent } from './components/header/header.component';
 import { ChatCreateComponent } from './components/chat/chat-create/chat-create.component';
 import { UserChatroomsComponent } from './components/chat/user-chatrooms/user-chatrooms.component';
+import { ScrollToBottomDirective } from './directives/scroll-to-bottom.directive';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { UserChatroomsComponent } from './components/chat/user-chatrooms/user-ch
     HeaderComponent,
     ChatCreateComponent,
     UserChatroomsComponent,
+    ScrollToBottomDirective,
   ],
   imports: [
     BrowserModule,
